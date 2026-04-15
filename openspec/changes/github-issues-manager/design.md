@@ -33,21 +33,47 @@ GitHub Issuesを管理するFlutterアプリを新規構築する。現状はFlu
 **理由**: GitHub REST APIとの通信はシンプルなREST呼び出しのみであり、インターセプター等の高度な機能は不要。Dart公式パッケージで依存が軽い。  
 **代替案**: dio（多機能だがこの規模では過剰）
 
-### 3. レイヤー構成
+### 3. ディレクトリ構成: feature-first
+
+**選択**: feature-first構成を採用  
+**理由**: BLoC公式チュートリアル（Flutter Counter, Weather, Todos）が全てfeature-first構成を採用している。公式ではRepository/Data Providerを`packages/`として別パッケージに分離するが、今回の規模では`lib/`内に配置する。  
+**代替案**: layer-first（`blocs/`, `screens/`等のレイヤー単位で分割）は公式チュートリアルでは採用されていない
 
 ```
 lib/
 ├── main.dart
-├── config/                  # コンパイル定数の定義
-├── models/                  # データモデル（Issue, Comment, Label）
-├── repositories/            # APIアクセスの抽象化
-├── blocs/                   # BLoC（Event, State, BLoC本体）
-├── screens/                 # 画面ウィジェット
-└── widgets/                 # 共通ウィジェット
+├── app/                           # アプリ全体の設定
+│   └── app.dart
+├── config/                        # コンパイル定数の定義
+│   └── app_config.dart
+├── models/                        # 共有ドメインモデル
+│   ├── issue.dart
+│   ├── comment.dart
+│   └── label.dart
+├── repositories/                  # Repository層
+│   ├── issue_repository.dart
+│   └── comment_repository.dart
+├── data_providers/                # Data Provider層（API通信）
+│   └── github_api_client.dart
+├── issue_list/                    # feature: Issue一覧
+│   ├── bloc/
+│   ├── view/
+│   ├── widgets/
+│   └── issue_list.dart            # バレルファイル
+├── issue_detail/                  # feature: Issue詳細
+│   ├── bloc/
+│   ├── view/
+│   ├── widgets/
+│   └── issue_detail.dart
+├── issue_create/                  # feature: Issue作成
+│   ├── bloc/
+│   ├── view/
+│   └── issue_create.dart
+└── issue_update/                  # feature: Issue更新
+    ├── bloc/
+    ├── view/
+    └── issue_update.dart
 ```
-
-**理由**: BLoCパターンの標準的なレイヤー構成に従い、責務を明確に分離する。  
-**代替案**: feature-firstのディレクトリ構成（機能が増えた場合に有利だが、今回は機能数が限定的なためlayer-firstで十分）
 
 ### 4. ページネーション方式
 

@@ -178,8 +178,28 @@ class CounterView extends StatelessWidget {
 }
 ```
 
+## イベントハンドラ内の非同期処理
+
+イベントハンドラ内の非同期処理は**必ずawaitする**。awaitしないとハンドラが先に完了し、emitが呼ばれた時点でassertエラーになる。
+
+```dart
+// BAD — awaitしていない
+on<DataRequested>((event, emit) {
+  repository.getData().then((data) => emit(DataLoaded(data)));
+});
+
+// GOOD — awaitしている
+on<DataRequested>((event, emit) async {
+  final data = await repository.getData();
+  emit(DataLoaded(data));
+});
+```
+
+`emit.forEach` / `emit.onEach` も同様にawaitが必須。
+
 ## やってはいけないこと
 
 - Bloc内で他のBlocを直接参照しない（Repository経由でデータを共有する）
 - BlocにBuildContextを渡さない
 - BlocBuilder内で副作用を実行しない（BlocListenerを使う）
+- イベントハンドラ内の非同期処理をawaitせずに放置しない
