@@ -2,7 +2,7 @@
 
 - [ ] 1.1 flutter_bloc, http, flutter_markdown 等の依存パッケージをpubspec.yamlに追加
 - [ ] 1.2 ディレクトリ構成を作成（config, models, repositories, blocs, screens, widgets）
-- [ ] 1.3 dart-define-from-file用の.envファイルテンプレートと.gitignore設定を追加
+- [ ] 1.3 dart-define-from-file用のdart_defines.jsonファイルテンプレートと.gitignore設定を追加
 - [ ] 1.4 コンパイル定数の定義（GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO）をconfig/に実装
 
 ## 2. データモデル

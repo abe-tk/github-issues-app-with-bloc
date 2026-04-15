@@ -52,7 +52,8 @@ lib/
 │   └── label.dart
 ├── repositories/                  # Repository層
 │   ├── issue_repository.dart
-│   └── comment_repository.dart
+│   ├── comment_repository.dart
+│   └── label_repository.dart
 ├── data_providers/                # Data Provider層（API通信）
 │   └── github_api_client.dart
 ├── issue_list/                    # feature: Issue一覧
@@ -82,18 +83,41 @@ lib/
 
 ### 5. コンパイル定数の管理
 
-**選択**: `dart-define-from-file`で`.env`ファイルからPATとリポジトリ情報を注入  
-**理由**: シークレットをコードに含めず、ビルド時に注入する安全な方式。`.env`ファイルを`.gitignore`に追加して保護する。
+**選択**: `dart-define-from-file`で`dart_defines.json`ファイルからPATとリポジトリ情報を注入  
+**理由**: シークレットをコードに含めず、ビルド時に注入する安全な方式。`dart_defines.json`ファイルを`.gitignore`に追加して保護する。
 
+```json
+// dart_defines.json
+{
+  "GITHUB_TOKEN": "ghp_xxxxxxxxxxxx",
+  "GITHUB_OWNER": "owner-name",
+  "GITHUB_REPO": "repo-name"
+}
 ```
-# .env
-GITHUB_TOKEN=ghp_xxxxxxxxxxxx
-GITHUB_OWNER=owner-name
-GITHUB_REPO=repo-name
-```
+
+## 実装戦略
+
+機能単位でコミット粒度を下げるため、以下の6回に分けて実装する。各回で `/plan-and-review` → `/impl-and-review` → コミット の流れで進める。
+
+| 回 | 範囲 | 確認方法 |
+|----|------|---------|
+| 1a | 基盤セットアップ + Models | テスト通過 |
+| 1b | Data Provider + Repositories | テスト通過 |
+| 2 | Feature: issue_list | 画面表示 |
+| 3 | Feature: issue_detail | 画面遷移 |
+| 4 | Feature: issue_comments | コメント表示・投稿 |
+| 5 | Feature: issue_create | 作成画面 |
+| 6 | Feature: issue_update + アプリ統合 | 編集画面 + テーマ統一 |
+
+### 補足
+
+- 回1a, 1bは単独では画面として動かないが、テストで品質を担保する
+- 回2で初めてアプリとして動作確認が可能になる
+- 共有ドメインモデルは `lib/models/` に配置する（BLoC公式チュートリアルに倣う）
+- `issue_comments` は独立featureとして `lib/issue_comments/` に配置する
 
 ## Risks / Trade-offs
 
-- **[PAT漏洩]** → `.env`を`.gitignore`に登録。README にセットアップ手順を記載し、各開発者が自分のPATを使う想定。
+- **[PAT漏洩]** → `dart_defines.json`を`.gitignore`に登録。README にセットアップ手順を記載し、各開発者が自分のPATを使う想定。
 - **[APIレート制限]** → 認証済みリクエストは5,000回/時間。通常利用では問題にならない。UIにエラー表示を実装して対処。
 - **[Pull RequestがIssues APIに混入]** → GitHub REST APIの`/issues`エンドポイントはPull Requestも返す。`pull_request`フィールドの有無でフィルタリングする。
