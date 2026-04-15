@@ -134,40 +134,30 @@ export 'view/issue_list_page.dart';
 
 - Data Layer に配置する
 - 純粋なDartクラス（ライブラリ依存なし）として定義する
-- `Equatable` を継承する
-- `fromJson` / `toJson` でJSON変換を担う
+- freezed + json_serializable で不変性・等価判定・copyWith・fromJson を自動生成する
+- `build.yaml` で `field_rename: snake` を設定し、スネークケースフィールドを自動変換する
+- 特殊なフィールドのみ `@JsonKey` で個別対応する
 
 ```dart
-class Issue extends Equatable {
-  final int number;
-  final String title;
-  final String? body;
-  final String state;
-  final List<Label> labels;
-  final DateTime createdAt;
+@freezed
+abstract class Issue with _$Issue {
+  const Issue._();
 
-  const Issue({
-    required this.number,
-    required this.title,
-    this.body,
-    required this.state,
-    required this.labels,
-    required this.createdAt,
-  });
+  const factory Issue({
+    required int number,
+    required String title,
+    String? body,
+    required IssueState state,
+    required List<Label> labels,
+    required DateTime createdAt,
+    Map<String, dynamic>? pullRequest,
+  }) = _Issue;
 
-  factory Issue.fromJson(Map<String, dynamic> json) => Issue(
-    number: json['number'] as int,
-    title: json['title'] as String,
-    body: json['body'] as String?,
-    state: json['state'] as String,
-    labels: (json['labels'] as List)
-        .map((l) => Label.fromJson(l as Map<String, dynamic>))
-        .toList(),
-    createdAt: DateTime.parse(json['created_at'] as String),
+  bool get isPullRequest => pullRequest != null;
+
+  factory Issue.fromJson(Map<String, dynamic> json) => _$IssueFromJson(json);
+    pullRequest: json['pull_request'] as Map<String, dynamic>?,
   );
-
-  @override
-  List<Object?> get props => [number, title, body, state, labels, createdAt];
 }
 ```
 

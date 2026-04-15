@@ -27,13 +27,19 @@ GitHub Issuesを管理するFlutterアプリを新規構築する。現状はFlu
 **理由**: BLoCパターンの公式推奨実装であり、Event→State の明確なフローで状態遷移を追跡しやすい。学習目的にも適している。  
 **代替案**: Riverpod（より軽量だがBLoC学習の目的に合わない）、Provider（BLoCの下位互換）
 
-### 2. HTTPクライアント: http パッケージ
+### 2. データモデル: freezed
+
+**選択**: `freezed` + `json_serializable` を使用  
+**理由**: 不変性・等価判定（`==`, `hashCode`）・`copyWith`・`toString`・`fromJson` を自動生成し、ボイラープレートを削減する。BLoCの状態比較で不要な再描画を防ぐために等価判定が重要であり、手動実装のミスを防げる。`build.yaml` で `field_rename: snake` を設定し、GitHub APIのスネークケースフィールド（`created_at`, `pull_request`等）を `@JsonKey` なしで自動変換する。  
+**代替案**: Equatable + 手動fromJson（ボイラープレートが多い）
+
+### 3. HTTPクライアント: http パッケージ
 
 **選択**: `http` パッケージを使用  
 **理由**: GitHub REST APIとの通信はシンプルなREST呼び出しのみであり、インターセプター等の高度な機能は不要。Dart公式パッケージで依存が軽い。  
 **代替案**: dio（多機能だがこの規模では過剰）
 
-### 3. ディレクトリ構成: feature-first
+### 4. ディレクトリ構成: feature-first
 
 **選択**: feature-first構成を採用  
 **理由**: BLoC公式チュートリアル（Flutter Counter, Weather, Todos）が全てfeature-first構成を採用している。公式ではRepository/Data Providerを`packages/`として別パッケージに分離するが、今回の規模では`lib/`内に配置する。  
@@ -76,12 +82,12 @@ lib/
     └── issue_update.dart
 ```
 
-### 4. ページネーション方式
+### 5. ページネーション方式
 
 **選択**: GitHub APIの`page`/`per_page`パラメータを使用し、スクロール末尾到達時に次ページを取得  
 **理由**: GitHub REST APIの標準的なページネーション。Linkヘッダーまたはレスポンスのアイテム数で次ページの有無を判定する。
 
-### 5. コンパイル定数の管理
+### 6. コンパイル定数の管理
 
 **選択**: `dart-define-from-file`で`dart_defines.json`ファイルからPATとリポジトリ情報を注入  
 **理由**: シークレットをコードに含めず、ビルド時に注入する安全な方式。`dart_defines.json`ファイルを`.gitignore`に追加して保護する。

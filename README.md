@@ -28,7 +28,13 @@ fvm use
 fvm flutter pub get
 ```
 
-3. GitHub PAT の設定
+3. コード生成（freezed）
+
+```bash
+fvm dart run build_runner build --delete-conflicting-outputs
+```
+
+4. GitHub PAT の設定
 
 GitHub PAT は [Settings > Developer settings > Personal access tokens](https://github.com/settings/tokens) から発行する。
 
@@ -47,7 +53,7 @@ GitHub PAT は [Settings > Developer settings > Personal access tokens](https://
 }
 ```
 
-4. ビルド
+5. ビルド
 
 ```bash
 fvm flutter run --dart-define-from-file=dart_defines.json

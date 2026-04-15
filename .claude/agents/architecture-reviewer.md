@@ -41,7 +41,7 @@ color: blue
 ### BLoC 構成
 - BLoC/Cubit の選択は妥当か
 - Event は過去形の命名になっているか
-- State は Equatable を継承し不変か
+- State は freezed で不変性・等価判定が自動生成されているか
 - BlocProvider の配置は適切か（Page で提供、View で使用）
 - context.read / context.watch の使い分けは正しいか
 - BLoC 同士が直接参照していないか
