@@ -46,3 +46,6 @@ app.*.map.json
 
 # FVM Version Cache
 .fvm/
+
+# Local dart-define secrets (see README)
+dart_defines.json
