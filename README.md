@@ -52,3 +52,27 @@ GitHub PAT は [Settings > Developer settings > Personal access tokens](https://
 ```bash
 fvm flutter run --dart-define-from-file=dart_defines.json
 ```
+
+## 仕様
+
+[OpenSpec](https://github.com/openspec-dev/openspec) を使用して仕様を管理している。
+
+仕様ドキュメントは `openspec/` ディレクトリに格納されており、以下の構成になっている。
+
+```
+openspec/
+├── config.yaml                          # OpenSpec 設定
+├── changes/
+│   └── github-issues-manager/           # 現在のchange
+│       ├── proposal.md                  # 動機・スコープ
+│       ├── design.md                    # 技術設計
+│       ├── tasks.md                     # 実装タスク一覧
+│       └── specs/                       # 機能仕様
+│           ├── issue-list/spec.md       # Issue一覧
+│           ├── issue-detail/spec.md     # Issue詳細
+│           ├── issue-create/spec.md     # Issue作成
+│           ├── issue-update/spec.md     # Issue更新
+│           ├── issue-comments/spec.md   # コメント
+│           └── github-api/spec.md       # API通信基盤
+└── specs/                               # アーカイブ済み仕様
+```
