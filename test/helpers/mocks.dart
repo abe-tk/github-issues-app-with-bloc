@@ -2,6 +2,8 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:app/data_providers/github_api_client.dart';
+import 'package:app/issue_detail/bloc/issue_detail_cubit.dart';
+import 'package:app/issue_detail/bloc/issue_detail_state.dart';
 import 'package:app/issue_list/bloc/issue_list_bloc.dart';
 import 'package:app/issue_list/bloc/issue_list_event.dart';
 import 'package:app/issue_list/bloc/issue_list_state.dart';
@@ -19,3 +21,6 @@ class MockLabelRepository extends Mock implements LabelRepository {}
 
 class MockIssueListBloc extends MockBloc<IssueListEvent, IssueListState>
     implements IssueListBloc {}
+
+class MockIssueDetailCubit extends MockCubit<IssueDetailState>
+    implements IssueDetailCubit {}

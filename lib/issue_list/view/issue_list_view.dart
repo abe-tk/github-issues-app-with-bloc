@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:app/issue_detail/view/issue_detail_page.dart';
 import 'package:app/issue_list/bloc/issue_list_bloc.dart';
 import 'package:app/issue_list/bloc/issue_list_event.dart';
 import 'package:app/issue_list/bloc/issue_list_state.dart';
@@ -118,7 +119,15 @@ class _IssueListViewState extends State<IssueListView> {
                 ),
               );
             }
-            return IssueListTile(issue: state.issues[index]);
+            final issue = state.issues[index];
+            return IssueListTile(
+              issue: issue,
+              onTap: () {
+                Navigator.of(context).push(
+                  IssueDetailPage.route(issueNumber: issue.number),
+                );
+              },
+            );
           },
         );
     }
