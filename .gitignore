@@ -49,3 +49,6 @@ app.*.map.json
 
 # Local dart-define secrets (see README)
 dart_defines.json
+
+# Personal memo
+memo.md
