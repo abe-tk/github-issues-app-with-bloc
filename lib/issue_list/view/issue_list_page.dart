@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:app/issue_create/view/issue_create_page.dart';
 import 'package:app/issue_list/bloc/issue_list_bloc.dart';
 import 'package:app/issue_list/bloc/issue_list_event.dart';
 import 'package:app/issue_list/view/issue_list_view.dart';
@@ -18,9 +19,22 @@ class IssueListPage extends StatelessWidget {
         issueRepository: context.read<IssueRepository>(),
         labelRepository: context.read<LabelRepository>(),
       )..add(const IssueListFetched()),
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Issues')),
-        body: const IssueListView(),
+      child: Builder(
+        builder: (context) => Scaffold(
+          appBar: AppBar(title: const Text('Issues')),
+          body: const IssueListView(),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () async {
+              final result = await Navigator.of(
+                context,
+              ).push(IssueCreatePage.route());
+              if (result == true && context.mounted) {
+                context.read<IssueListBloc>().add(const IssueListFetched());
+              }
+            },
+            child: const Icon(Icons.add),
+          ),
+        ),
       ),
     );
   }
