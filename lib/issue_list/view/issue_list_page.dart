@@ -19,21 +19,14 @@ class IssueListPage extends StatelessWidget {
         issueRepository: context.read<IssueRepository>(),
         labelRepository: context.read<LabelRepository>(),
       )..add(const IssueListFetched()),
-      child: Builder(
-        builder: (context) => Scaffold(
-          appBar: AppBar(title: const Text('Issues')),
-          body: const IssueListView(),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () async {
-              final result = await Navigator.of(
-                context,
-              ).push(IssueCreatePage.route());
-              if (result == true && context.mounted) {
-                context.read<IssueListBloc>().add(const IssueListFetched());
-              }
-            },
-            child: const Icon(Icons.add),
-          ),
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Issues')),
+        body: const IssueListView(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(IssueCreatePage.route());
+          },
+          child: const Icon(Icons.add),
         ),
       ),
     );

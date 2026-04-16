@@ -45,11 +45,11 @@
 
 ## 7. Issue更新機能（issue-update）
 
-- [ ] 7.1 IssueUpdate BLoCの作成（Event: 更新 / State: initial, submitting, success, error）
-- [ ] 7.2 Issue編集画面の作成（title・body編集、保存ボタン）
-- [ ] 7.3 入力バリデーション（title必須）の実装
-- [ ] 7.4 Issue詳細画面でのOpen/Closeトグルボタンの実装
-- [ ] 7.5 更新成功後の詳細画面への反映
+- [x] 7.1 IssueUpdate BLoCの作成（Event: 更新 / State: initial, submitting, success, error）
+- [x] 7.2 Issue編集画面の作成（title・body編集、保存ボタン）
+- [x] 7.3 入力バリデーション（title必須）の実装
+- [x] 7.4 Issue詳細画面でのOpen/Closeトグルボタンの実装
+- [x] 7.5 更新成功後の詳細画面への反映
 
 ## 8. コメント機能（issue-comments）
 
@@ -60,6 +60,6 @@
 
 ## 9. アプリ統合・画面遷移
 
-- [ ] 9.1 MaterialAppのルーティング設定（一覧→詳細→編集、一覧→作成）
+- [x] 9.1 MaterialAppのルーティング設定（一覧→詳細→編集、一覧→作成）
 - [x] 9.2 BlocProviderの設定と依存注入の構成
 - [x] 9.3 アプリ全体のテーマ・スタイル設定

@@ -29,6 +29,10 @@ void main() {
   setUp(() {
     mockIssueRepository = MockIssueRepository();
     mockLabelRepository = MockLabelRepository();
+    // IssueListBloc のコンストラクタで changes を購読するため Stub が必要
+    when(() => mockIssueRepository.changes).thenAnswer(
+      (_) => const Stream.empty(),
+    );
   });
 
   IssueListBloc buildBloc() => IssueListBloc(
@@ -225,6 +229,35 @@ void main() {
           IssueListState(
             status: IssueListStatus.success,
             labelFilter: 'bug',
+            issues: [_mockIssue],
+            hasReachedMax: true,
+          ),
+        ],
+      );
+    });
+
+    group('changes Stream', () {
+      blocTest<IssueListBloc, IssueListState>(
+        'changes Stream から通知を受けると一覧を再取得する',
+        setUp: () {
+          // 1件通知する Stream を設定
+          when(() => mockIssueRepository.changes).thenAnswer(
+            (_) => Stream<void>.value(null),
+          );
+          when(
+            () => mockIssueRepository.getIssues(state: 'open', label: null),
+          ).thenAnswer((_) async => [_mockIssue]);
+          when(
+            () => mockLabelRepository.getLabels(),
+          ).thenAnswer((_) async => []);
+        },
+        build: buildBloc,
+        // Stream の通知が非同期で処理されるのを待つ
+        wait: const Duration(milliseconds: 100),
+        expect: () => [
+          const IssueListState(status: IssueListStatus.loading),
+          IssueListState(
+            status: IssueListStatus.success,
             issues: [_mockIssue],
             hasReachedMax: true,
           ),

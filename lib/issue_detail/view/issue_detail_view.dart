@@ -6,6 +6,8 @@ import 'package:app/issue_detail/bloc/issue_detail_cubit.dart';
 import 'package:app/issue_detail/bloc/issue_detail_state.dart';
 import 'package:app/issue_detail/widgets/comment_list.dart';
 import 'package:app/issue_detail/widgets/issue_detail_header.dart';
+import 'package:app/issue_update/view/issue_update_page.dart';
+import 'package:app/models/issue.dart';
 
 /// Issue詳細のView（Scaffold + AppBar + BlocBuilder でUI構築）
 class IssueDetailView extends StatelessWidget {
@@ -13,7 +15,17 @@ class IssueDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<IssueDetailCubit, IssueDetailState>(
+    return BlocConsumer<IssueDetailCubit, IssueDetailState>(
+      listenWhen: (previous, current) =>
+          current.toggleErrorMessage != null &&
+          current.toggleErrorMessage != previous.toggleErrorMessage,
+      listener: (context, state) {
+        if (state.toggleErrorMessage != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.toggleErrorMessage!)),
+          );
+        }
+      },
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
@@ -24,8 +36,8 @@ class IssueDetailView extends StatelessWidget {
               IconButton(
                 onPressed: state.status == IssueDetailStatus.success
                     ? () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('編集機能は未実装です')),
+                        Navigator.of(context).push(
+                          IssueUpdatePage.route(issue: state.issue!),
                         );
                       }
                     : null,
@@ -84,6 +96,16 @@ class IssueDetailView extends StatelessWidget {
                   ),
                 ),
               ),
+            // Open/Close トグルボタン
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: _buildToggleButton(context, issue, state),
+                ),
+              ),
+            ),
             // 区切り線 + コメントヘッダー
             SliverToBoxAdapter(
               child: Padding(
@@ -113,5 +135,31 @@ class IssueDetailView extends StatelessWidget {
           ],
         );
     }
+  }
+
+  Widget _buildToggleButton(
+    BuildContext context,
+    Issue issue,
+    IssueDetailState state,
+  ) {
+    final isOpen = issue.state == IssueState.open;
+
+    return ElevatedButton.icon(
+      onPressed: state.isTogglingState
+          ? null
+          : () => context.read<IssueDetailCubit>().toggleState(),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: isOpen ? Colors.red.shade50 : Colors.green.shade50,
+        foregroundColor: isOpen ? Colors.red.shade700 : Colors.green.shade700,
+      ),
+      icon: state.isTogglingState
+          ? const SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : Icon(isOpen ? Icons.close : Icons.refresh),
+      label: Text(isOpen ? 'Close Issue' : 'Reopen Issue'),
+    );
   }
 }

@@ -2,6 +2,8 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+
+
 import 'package:app/issue_detail/bloc/issue_detail_cubit.dart';
 import 'package:app/issue_detail/bloc/issue_detail_state.dart';
 import 'package:app/models/comment.dart';
@@ -34,6 +36,10 @@ void main() {
   setUp(() {
     mockIssueRepository = MockIssueRepository();
     mockCommentRepository = MockCommentRepository();
+    // IssueDetailCubit のコンストラクタで changes を購読するため Stub が必要
+    when(() => mockIssueRepository.changes).thenAnswer(
+      (_) => const Stream<void>.empty(),
+    );
   });
 
   IssueDetailCubit buildCubit() => IssueDetailCubit(
@@ -126,6 +132,127 @@ void main() {
               .having((s) => s.status, 'status', IssueDetailStatus.failure)
               .having((s) => s.errorMessage, 'errorMessage', isNotNull),
         ],
+      );
+    });
+
+    group('toggleState', () {
+      final closedIssue = _mockIssue.copyWith(state: IssueState.closed);
+
+      blocTest<IssueDetailCubit, IssueDetailState>(
+        'open → closed に切り替え成功する',
+        setUp: () {
+          when(
+            () => mockIssueRepository.updateIssue(1, state: 'closed'),
+          ).thenAnswer((_) async => closedIssue);
+        },
+        build: buildCubit,
+        seed: () => IssueDetailState(
+          status: IssueDetailStatus.success,
+          issue: _mockIssue,
+        ),
+        act: (cubit) => cubit.toggleState(),
+        expect: () => [
+          IssueDetailState(
+            status: IssueDetailStatus.success,
+            issue: _mockIssue,
+            isTogglingState: true,
+          ),
+          IssueDetailState(
+            status: IssueDetailStatus.success,
+            issue: closedIssue,
+          ),
+        ],
+      );
+
+      blocTest<IssueDetailCubit, IssueDetailState>(
+        'closed → open に切り替え成功する',
+        setUp: () {
+          when(
+            () => mockIssueRepository.updateIssue(1, state: 'open'),
+          ).thenAnswer((_) async => _mockIssue);
+        },
+        build: buildCubit,
+        seed: () => IssueDetailState(
+          status: IssueDetailStatus.success,
+          issue: closedIssue,
+        ),
+        act: (cubit) => cubit.toggleState(),
+        expect: () => [
+          IssueDetailState(
+            status: IssueDetailStatus.success,
+            issue: closedIssue,
+            isTogglingState: true,
+          ),
+          IssueDetailState(
+            status: IssueDetailStatus.success,
+            issue: _mockIssue,
+          ),
+        ],
+      );
+
+      blocTest<IssueDetailCubit, IssueDetailState>(
+        '切り替え失敗時は issue を変更せず toggleErrorMessage を設定する',
+        setUp: () {
+          when(
+            () => mockIssueRepository.updateIssue(1, state: 'closed'),
+          ).thenThrow(Exception('Server error'));
+        },
+        build: buildCubit,
+        seed: () => IssueDetailState(
+          status: IssueDetailStatus.success,
+          issue: _mockIssue,
+        ),
+        act: (cubit) => cubit.toggleState(),
+        expect: () => [
+          IssueDetailState(
+            status: IssueDetailStatus.success,
+            issue: _mockIssue,
+            isTogglingState: true,
+          ),
+          isA<IssueDetailState>()
+              .having((s) => s.issue, 'issue', _mockIssue)
+              .having((s) => s.isTogglingState, 'isTogglingState', false)
+              .having(
+                (s) => s.toggleErrorMessage,
+                'toggleErrorMessage',
+                isNotNull,
+              ),
+        ],
+      );
+
+      blocTest<IssueDetailCubit, IssueDetailState>(
+        'issue が null のとき何もしない',
+        build: buildCubit,
+        act: (cubit) => cubit.toggleState(),
+        expect: () => [],
+        verify: (_) {
+          verifyNever(
+            () => mockIssueRepository.updateIssue(
+              any(),
+              state: any(named: 'state'),
+            ),
+          );
+        },
+      );
+
+      blocTest<IssueDetailCubit, IssueDetailState>(
+        'isTogglingState 中は二重実行を防止する',
+        build: buildCubit,
+        seed: () => IssueDetailState(
+          status: IssueDetailStatus.success,
+          issue: _mockIssue,
+          isTogglingState: true,
+        ),
+        act: (cubit) => cubit.toggleState(),
+        expect: () => [],
+        verify: (_) {
+          verifyNever(
+            () => mockIssueRepository.updateIssue(
+              any(),
+              state: any(named: 'state'),
+            ),
+          );
+        },
       );
     });
   });

@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$IssueDetailState {
 
- IssueDetailStatus get status; Issue? get issue; List<Comment> get comments; String? get errorMessage;
+ IssueDetailStatus get status; Issue? get issue; List<Comment> get comments; String? get errorMessage; bool get isTogglingState; String? get toggleErrorMessage;
 /// Create a copy of IssueDetailState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $IssueDetailStateCopyWith<IssueDetailState> get copyWith => _$IssueDetailStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is IssueDetailState&&(identical(other.status, status) || other.status == status)&&(identical(other.issue, issue) || other.issue == issue)&&const DeepCollectionEquality().equals(other.comments, comments)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is IssueDetailState&&(identical(other.status, status) || other.status == status)&&(identical(other.issue, issue) || other.issue == issue)&&const DeepCollectionEquality().equals(other.comments, comments)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.isTogglingState, isTogglingState) || other.isTogglingState == isTogglingState)&&(identical(other.toggleErrorMessage, toggleErrorMessage) || other.toggleErrorMessage == toggleErrorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,issue,const DeepCollectionEquality().hash(comments),errorMessage);
+int get hashCode => Object.hash(runtimeType,status,issue,const DeepCollectionEquality().hash(comments),errorMessage,isTogglingState,toggleErrorMessage);
 
 @override
 String toString() {
-  return 'IssueDetailState(status: $status, issue: $issue, comments: $comments, errorMessage: $errorMessage)';
+  return 'IssueDetailState(status: $status, issue: $issue, comments: $comments, errorMessage: $errorMessage, isTogglingState: $isTogglingState, toggleErrorMessage: $toggleErrorMessage)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $IssueDetailStateCopyWith<$Res>  {
   factory $IssueDetailStateCopyWith(IssueDetailState value, $Res Function(IssueDetailState) _then) = _$IssueDetailStateCopyWithImpl;
 @useResult
 $Res call({
- IssueDetailStatus status, Issue? issue, List<Comment> comments, String? errorMessage
+ IssueDetailStatus status, Issue? issue, List<Comment> comments, String? errorMessage, bool isTogglingState, String? toggleErrorMessage
 });
 
 
@@ -62,12 +62,14 @@ class _$IssueDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of IssueDetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? issue = freezed,Object? comments = null,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? issue = freezed,Object? comments = null,Object? errorMessage = freezed,Object? isTogglingState = null,Object? toggleErrorMessage = freezed,}) {
   return _then(_self.copyWith(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as IssueDetailStatus,issue: freezed == issue ? _self.issue : issue // ignore: cast_nullable_to_non_nullable
 as Issue?,comments: null == comments ? _self.comments : comments // ignore: cast_nullable_to_non_nullable
 as List<Comment>,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,isTogglingState: null == isTogglingState ? _self.isTogglingState : isTogglingState // ignore: cast_nullable_to_non_nullable
+as bool,toggleErrorMessage: freezed == toggleErrorMessage ? _self.toggleErrorMessage : toggleErrorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -165,10 +167,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( IssueDetailStatus status,  Issue? issue,  List<Comment> comments,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( IssueDetailStatus status,  Issue? issue,  List<Comment> comments,  String? errorMessage,  bool isTogglingState,  String? toggleErrorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _IssueDetailState() when $default != null:
-return $default(_that.status,_that.issue,_that.comments,_that.errorMessage);case _:
+return $default(_that.status,_that.issue,_that.comments,_that.errorMessage,_that.isTogglingState,_that.toggleErrorMessage);case _:
   return orElse();
 
 }
@@ -186,10 +188,10 @@ return $default(_that.status,_that.issue,_that.comments,_that.errorMessage);case
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( IssueDetailStatus status,  Issue? issue,  List<Comment> comments,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( IssueDetailStatus status,  Issue? issue,  List<Comment> comments,  String? errorMessage,  bool isTogglingState,  String? toggleErrorMessage)  $default,) {final _that = this;
 switch (_that) {
 case _IssueDetailState():
-return $default(_that.status,_that.issue,_that.comments,_that.errorMessage);case _:
+return $default(_that.status,_that.issue,_that.comments,_that.errorMessage,_that.isTogglingState,_that.toggleErrorMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -206,10 +208,10 @@ return $default(_that.status,_that.issue,_that.comments,_that.errorMessage);case
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( IssueDetailStatus status,  Issue? issue,  List<Comment> comments,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( IssueDetailStatus status,  Issue? issue,  List<Comment> comments,  String? errorMessage,  bool isTogglingState,  String? toggleErrorMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _IssueDetailState() when $default != null:
-return $default(_that.status,_that.issue,_that.comments,_that.errorMessage);case _:
+return $default(_that.status,_that.issue,_that.comments,_that.errorMessage,_that.isTogglingState,_that.toggleErrorMessage);case _:
   return null;
 
 }
@@ -221,7 +223,7 @@ return $default(_that.status,_that.issue,_that.comments,_that.errorMessage);case
 
 
 class _IssueDetailState implements IssueDetailState {
-  const _IssueDetailState({this.status = IssueDetailStatus.initial, this.issue, final  List<Comment> comments = const [], this.errorMessage}): _comments = comments;
+  const _IssueDetailState({this.status = IssueDetailStatus.initial, this.issue, final  List<Comment> comments = const [], this.errorMessage, this.isTogglingState = false, this.toggleErrorMessage}): _comments = comments;
   
 
 @override@JsonKey() final  IssueDetailStatus status;
@@ -234,6 +236,8 @@ class _IssueDetailState implements IssueDetailState {
 }
 
 @override final  String? errorMessage;
+@override@JsonKey() final  bool isTogglingState;
+@override final  String? toggleErrorMessage;
 
 /// Create a copy of IssueDetailState
 /// with the given fields replaced by the non-null parameter values.
@@ -245,16 +249,16 @@ _$IssueDetailStateCopyWith<_IssueDetailState> get copyWith => __$IssueDetailStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _IssueDetailState&&(identical(other.status, status) || other.status == status)&&(identical(other.issue, issue) || other.issue == issue)&&const DeepCollectionEquality().equals(other._comments, _comments)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _IssueDetailState&&(identical(other.status, status) || other.status == status)&&(identical(other.issue, issue) || other.issue == issue)&&const DeepCollectionEquality().equals(other._comments, _comments)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.isTogglingState, isTogglingState) || other.isTogglingState == isTogglingState)&&(identical(other.toggleErrorMessage, toggleErrorMessage) || other.toggleErrorMessage == toggleErrorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,issue,const DeepCollectionEquality().hash(_comments),errorMessage);
+int get hashCode => Object.hash(runtimeType,status,issue,const DeepCollectionEquality().hash(_comments),errorMessage,isTogglingState,toggleErrorMessage);
 
 @override
 String toString() {
-  return 'IssueDetailState(status: $status, issue: $issue, comments: $comments, errorMessage: $errorMessage)';
+  return 'IssueDetailState(status: $status, issue: $issue, comments: $comments, errorMessage: $errorMessage, isTogglingState: $isTogglingState, toggleErrorMessage: $toggleErrorMessage)';
 }
 
 
@@ -265,7 +269,7 @@ abstract mixin class _$IssueDetailStateCopyWith<$Res> implements $IssueDetailSta
   factory _$IssueDetailStateCopyWith(_IssueDetailState value, $Res Function(_IssueDetailState) _then) = __$IssueDetailStateCopyWithImpl;
 @override @useResult
 $Res call({
- IssueDetailStatus status, Issue? issue, List<Comment> comments, String? errorMessage
+ IssueDetailStatus status, Issue? issue, List<Comment> comments, String? errorMessage, bool isTogglingState, String? toggleErrorMessage
 });
 
 
@@ -282,12 +286,14 @@ class __$IssueDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of IssueDetailState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? issue = freezed,Object? comments = null,Object? errorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? issue = freezed,Object? comments = null,Object? errorMessage = freezed,Object? isTogglingState = null,Object? toggleErrorMessage = freezed,}) {
   return _then(_IssueDetailState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as IssueDetailStatus,issue: freezed == issue ? _self.issue : issue // ignore: cast_nullable_to_non_nullable
 as Issue?,comments: null == comments ? _self._comments : comments // ignore: cast_nullable_to_non_nullable
 as List<Comment>,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,isTogglingState: null == isTogglingState ? _self.isTogglingState : isTogglingState // ignore: cast_nullable_to_non_nullable
+as bool,toggleErrorMessage: freezed == toggleErrorMessage ? _self.toggleErrorMessage : toggleErrorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

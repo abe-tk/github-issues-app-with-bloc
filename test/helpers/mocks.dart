@@ -6,6 +6,8 @@ import 'package:app/issue_create/bloc/issue_create_cubit.dart';
 import 'package:app/issue_create/bloc/issue_create_state.dart';
 import 'package:app/issue_detail/bloc/issue_detail_cubit.dart';
 import 'package:app/issue_detail/bloc/issue_detail_state.dart';
+import 'package:app/issue_update/bloc/issue_update_cubit.dart';
+import 'package:app/issue_update/bloc/issue_update_state.dart';
 import 'package:app/issue_list/bloc/issue_list_bloc.dart';
 import 'package:app/issue_list/bloc/issue_list_event.dart';
 import 'package:app/issue_list/bloc/issue_list_state.dart';
@@ -29,3 +31,6 @@ class MockIssueCreateCubit extends MockCubit<IssueCreateState>
 
 class MockIssueDetailCubit extends MockCubit<IssueDetailState>
     implements IssueDetailCubit {}
+
+class MockIssueUpdateCubit extends MockCubit<IssueUpdateState>
+    implements IssueUpdateCubit {}

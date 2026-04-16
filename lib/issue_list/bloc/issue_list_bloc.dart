@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,6 +13,7 @@ import 'package:app/repositories/label_repository.dart';
 class IssueListBloc extends Bloc<IssueListEvent, IssueListState> {
   final IssueRepository _issueRepository;
   final LabelRepository _labelRepository;
+  late final StreamSubscription<void> _issueChangesSubscription;
 
   static const _perPage = 30;
 
@@ -27,6 +30,17 @@ class IssueListBloc extends Bloc<IssueListEvent, IssueListState> {
     );
     on<IssueListStateFilterChanged>(_onStateFilterChanged);
     on<IssueListLabelFilterChanged>(_onLabelFilterChanged);
+
+    // Issueデータの変更を購読して自動再取得する
+    _issueChangesSubscription = _issueRepository.changes.listen((_) {
+      add(const IssueListFetched());
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _issueChangesSubscription.cancel();
+    return super.close();
   }
 
   /// 初回取得・再試行
@@ -56,6 +70,14 @@ class IssueListBloc extends Bloc<IssueListEvent, IssueListState> {
         ),
       );
     } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          status: IssueListStatus.failure,
+          errorMessage: e.toString(),
+        ),
+      );
+    } on ParallelWaitError catch (e) {
+      // (getIssues, fetchLabels).wait の一方が失敗した場合
       emit(
         state.copyWith(
           status: IssueListStatus.failure,

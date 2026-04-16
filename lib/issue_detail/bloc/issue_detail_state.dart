@@ -15,5 +15,7 @@ abstract class IssueDetailState with _$IssueDetailState {
     Issue? issue,
     @Default([]) List<Comment> comments,
     String? errorMessage,
+    @Default(false) bool isTogglingState,
+    String? toggleErrorMessage,
   }) = _IssueDetailState;
 }
