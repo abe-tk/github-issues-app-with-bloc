@@ -6,6 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:app/issue_detail/bloc/issue_detail_cubit.dart';
 import 'package:app/issue_detail/bloc/issue_detail_state.dart';
 import 'package:app/issue_detail/view/issue_detail_view.dart';
+import 'package:app/issue_detail/widgets/comment_form.dart';
 import 'package:app/models/comment.dart';
 import 'package:app/models/issue.dart';
 import 'package:app/models/label.dart';
@@ -81,6 +82,8 @@ void main() {
       expect(find.text('bug'), findsOneWidget);
       expect(find.text('コメント (1)'), findsOneWidget);
       expect(find.text('testuser'), findsOneWidget);
+      // コメント投稿フォームが表示されている
+      expect(find.byType(CommentForm), findsOneWidget);
     });
 
     testWidgets('failure 状態でエラーメッセージと再試行ボタンが表示される',

@@ -63,6 +63,38 @@ class IssueDetailCubit extends Cubit<IssueDetailState> {
     }
   }
 
+  /// コメントを投稿する
+  Future<void> addComment(String body) async {
+    // 二重送信防止
+    if (state.commentPostingStatus == CommentPostingStatus.posting) return;
+
+    emit(
+      state.copyWith(
+        commentPostingStatus: CommentPostingStatus.posting,
+        commentErrorMessage: null,
+      ),
+    );
+
+    try {
+      await _commentRepository.createComment(_issueNumber, body: body);
+      // 全件再取得で一覧を更新（順序の一貫性を優先）
+      final comments = await _commentRepository.getComments(_issueNumber);
+      emit(
+        state.copyWith(
+          commentPostingStatus: CommentPostingStatus.success,
+          comments: comments,
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          commentPostingStatus: CommentPostingStatus.failure,
+          commentErrorMessage: e.toString(),
+        ),
+      );
+    }
+  }
+
   /// Issue詳細とコメントを並行取得する
   Future<void> fetchDetail() async {
     emit(state.copyWith(status: IssueDetailStatus.loading));

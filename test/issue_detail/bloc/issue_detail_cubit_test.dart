@@ -135,6 +135,95 @@ void main() {
       );
     });
 
+    group('addComment', () {
+      blocTest<IssueDetailCubit, IssueDetailState>(
+        'コメント投稿成功時に success 状態になりコメント一覧が更新される',
+        setUp: () {
+          when(
+            () => mockCommentRepository.createComment(1, body: 'テスト'),
+          ).thenAnswer((_) async => _mockComment);
+          when(
+            () => mockCommentRepository.getComments(1),
+          ).thenAnswer((_) async => [_mockComment]);
+        },
+        build: buildCubit,
+        seed: () => IssueDetailState(
+          status: IssueDetailStatus.success,
+          issue: _mockIssue,
+        ),
+        act: (cubit) => cubit.addComment('テスト'),
+        expect: () => [
+          IssueDetailState(
+            status: IssueDetailStatus.success,
+            issue: _mockIssue,
+            commentPostingStatus: CommentPostingStatus.posting,
+          ),
+          IssueDetailState(
+            status: IssueDetailStatus.success,
+            issue: _mockIssue,
+            commentPostingStatus: CommentPostingStatus.success,
+            comments: [_mockComment],
+          ),
+        ],
+        verify: (_) {
+          verify(
+            () => mockCommentRepository.createComment(1, body: 'テスト'),
+          ).called(1);
+        },
+      );
+
+      blocTest<IssueDetailCubit, IssueDetailState>(
+        'コメント投稿失敗時に failure 状態になる',
+        setUp: () {
+          when(
+            () => mockCommentRepository.createComment(1, body: 'テスト'),
+          ).thenThrow(Exception('Network error'));
+        },
+        build: buildCubit,
+        seed: () => IssueDetailState(
+          status: IssueDetailStatus.success,
+          issue: _mockIssue,
+        ),
+        act: (cubit) => cubit.addComment('テスト'),
+        expect: () => [
+          IssueDetailState(
+            status: IssueDetailStatus.success,
+            issue: _mockIssue,
+            commentPostingStatus: CommentPostingStatus.posting,
+          ),
+          isA<IssueDetailState>()
+              .having(
+                (s) => s.commentPostingStatus,
+                'commentPostingStatus',
+                CommentPostingStatus.failure,
+              )
+              .having(
+                (s) => s.commentErrorMessage,
+                'commentErrorMessage',
+                isNotNull,
+              ),
+        ],
+      );
+
+      blocTest<IssueDetailCubit, IssueDetailState>(
+        'posting 中は二重送信を防止する',
+        build: buildCubit,
+        seed: () => const IssueDetailState(
+          commentPostingStatus: CommentPostingStatus.posting,
+        ),
+        act: (cubit) => cubit.addComment('テスト'),
+        expect: () => [],
+        verify: (_) {
+          verifyNever(
+            () => mockCommentRepository.createComment(
+              any(),
+              body: any(named: 'body'),
+            ),
+          );
+        },
+      );
+    });
+
     group('toggleState', () {
       final closedIssue = _mockIssue.copyWith(state: IssueState.closed);
 

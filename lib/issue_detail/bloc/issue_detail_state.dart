@@ -7,6 +7,9 @@ part 'issue_detail_state.freezed.dart';
 /// Issue詳細の読み込みステータス
 enum IssueDetailStatus { initial, loading, success, failure }
 
+/// コメント投稿のステータス
+enum CommentPostingStatus { initial, posting, success, failure }
+
 /// Issue詳細画面の状態
 @freezed
 abstract class IssueDetailState with _$IssueDetailState {
@@ -17,5 +20,8 @@ abstract class IssueDetailState with _$IssueDetailState {
     String? errorMessage,
     @Default(false) bool isTogglingState,
     String? toggleErrorMessage,
+    @Default(CommentPostingStatus.initial)
+    CommentPostingStatus commentPostingStatus,
+    String? commentErrorMessage,
   }) = _IssueDetailState;
 }

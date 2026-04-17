@@ -53,10 +53,10 @@
 
 ## 8. コメント機能（issue-comments）
 
-- [ ] 8.1 Comment BLoCの作成（Event: 取得, 投稿 / State: loading, loaded, posting, error）
-- [ ] 8.2 Issue詳細画面内のコメント一覧表示（body, 作成者名, 作成日時）
-- [ ] 8.3 コメント投稿フォーム（入力欄、送信ボタン、空入力ガード）
-- [ ] 8.4 投稿成功後のコメント一覧の更新
+- [x] 8.1 Comment BLoCの作成（Event: 取得, 投稿 / State: loading, loaded, posting, error）
+- [x] 8.2 Issue詳細画面内のコメント一覧表示（body, 作成者名, 作成日時）
+- [x] 8.3 コメント投稿フォーム（入力欄、送信ボタン、空入力ガード）
+- [x] 8.4 投稿成功後のコメント一覧の更新
 
 ## 9. アプリ統合・画面遷移
 
