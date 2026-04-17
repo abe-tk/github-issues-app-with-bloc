@@ -34,8 +34,9 @@ fvm dart run build_runner build --delete-conflicting-outputs
 
 OpenSpecで仕様を管理。ドキュメントは`openspec/`ディレクトリに格納。
 
-- 仕様の確認: `openspec status --change github-issues-manager`
-- 実装開始: `/opsx:apply`
+- 初期実装（github-issues-manager）は全機能完了・アーカイブ済み
+- アーカイブ: `openspec/changes/archive/2026-04-17-github-issues-manager/`
+- 新しい変更を提案: `/opsx:propose`
 
 ## コーディング規約
 
